@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cloud.makeronbean.course.student.mapper.StudentInfoMapper">
+
+    <resultMap id="baseMap" type="cloud.makeronbean.course.model.student.StudentInfo" autoMapping="true">
+        <id column="id" property="id"/>
+        <result column="class_name" property="className"/>
+    </resultMap>
+
+    <!-- String selectXkCode(Long studentId); -->
+    <select id="selectXkCode" resultType="java.lang.String">
+        select ci.xk_code
+            from student_info si
+        join class_info ci on si.class_id = ci.id
+        where si.id = #{studentId} and si.is_deleted = 0
+    </select>
+
+
+    <!-- StudentInfo selectStudentById(Long studentId); -->
+    <select id="selectStudentById" resultType="cloud.makeronbean.course.model.student.StudentInfo">
+        select si.*,ci.name class_name
+            from student_info si
+        join class_info ci on ci.id = si.class_id
+        where si.id = #{studentId} and si.is_deleted = 0
+    </select>
+</mapper>
