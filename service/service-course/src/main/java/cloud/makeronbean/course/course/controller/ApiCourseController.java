@@ -29,7 +29,6 @@ public class ApiCourseController {
      */
     @GetMapping("/getAllSelectable")
     public List<CourseSelectableKind> getAllSelectable() {
-
         return courseService.getAllSelectable();
     }
 }

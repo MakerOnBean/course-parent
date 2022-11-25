@@ -38,4 +38,14 @@ public class RedisConst {
      * 学生id登录次数记录
      */
     public static final String LIMIT_TIME_PREFIX = "limit:time:";
+
+    /**
+     * 状态位消息主题
+     */
+    public static final String STATE_TOPIC = "state";
+
+    /**
+     * 消息接收者处理消息的方法名
+     */
+    public static final String STATE_RECEIVER_METHOD = "receiveMessage";
 }

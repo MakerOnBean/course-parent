@@ -41,8 +41,6 @@ public class AuthGlobalFilter implements GlobalFilter {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-/*    @Value("${authUrls.url}")
-    private String authUrls;*/
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -111,7 +109,7 @@ public class AuthGlobalFilter implements GlobalFilter {
             if (!StringUtils.isEmpty(jsonStr)) {
                 JSONObject jsonObject = JSONObject.parseObject(jsonStr);
                 String ip = jsonObject.getString("ip");
-                String nowIp = IpUtil.getGatwayIpAddress(request);
+                String nowIp = IpUtil.getGatewayIpAddress(request);
                 if (nowIp.equals(ip)){
                     studentId = jsonObject.getString("studentId");
                     xkCode = jsonObject.getString("xkCode");

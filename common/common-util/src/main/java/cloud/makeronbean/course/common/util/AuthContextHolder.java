@@ -1,6 +1,5 @@
 package cloud.makeronbean.course.common.util;
 
-//import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 
 import org.springframework.util.StringUtils;
 

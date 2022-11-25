@@ -78,7 +78,7 @@ public class StudentServiceImpl implements StudentService {
         redisTemplate.opsForValue().set(RedisConst.USER_LOGIN_KEY_PREFIX + token,jsonObject.toJSONString(),RedisConst.USER_KEY_TIMEOUT, TimeUnit.SECONDS);
 
         // 构建返回值结果
-        Map<String,Object> result = new HashMap<>();
+        Map<String,Object> result = new HashMap<>(1);
         result.put("token",token);
         return result;
     }

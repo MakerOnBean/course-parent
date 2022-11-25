@@ -17,12 +17,11 @@ import cloud.makeronbean.course.rabbit.constant.RabbitConst;
 import cloud.makeronbean.course.rabbit.servcie.RabbitService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.mysql.cj.log.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -104,6 +103,7 @@ public class CourseServiceImpl implements CourseService {
      * 处理选课消息
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void handleXk(XkRecode xkRecode) {
         try {
             Long studentId = xkRecode.getStudentId();
@@ -124,10 +124,5 @@ public class CourseServiceImpl implements CourseService {
             });
             throw e;
         }
-
-
-
-
-
     }
 }

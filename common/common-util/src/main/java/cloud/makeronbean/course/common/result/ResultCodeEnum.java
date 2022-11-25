@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 public enum ResultCodeEnum {
 
+    // 响应码以及对应的含义
     SUCCESS(200, "成功"),
     FULL(201, "课程已被选满"),
     RUN(202, "正在排队中"),
@@ -23,11 +24,11 @@ public enum ResultCodeEnum {
     MISMATCH(210,"登录账号或密码不正确")
     ;
 
-    private Integer code;
+    private final Integer code;
 
-    private String message;
+    private final String message;
 
-    private ResultCodeEnum(Integer code, String message) {
+    ResultCodeEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }

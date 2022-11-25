@@ -81,7 +81,8 @@ public class ActivityServiceImpl implements ActivityService {
                 }
 
                 executorService.execute(() -> {
-                    StateCacheHelper.put(courseSelectableId, Integer.valueOf(courseSelectable.getCount().toString()));
+                    //StateCacheHelper.setStateTrue(courseSelectableId);
+                    redisTemplate.convertAndSend(RedisConst.STATE_TOPIC,courseSelectableId+":true");
                 });
             }
         }
@@ -135,23 +136,30 @@ public class ActivityServiceImpl implements ActivityService {
         // 返回结果集处理
         List<CourseSelectable> resultList = values.stream()
                 .map(item -> JSON.parseObject(item, CourseSelectable.class))
-                //.peek(item -> item.setCount(StateCacheHelper.get(item.getId())))
-                .peek(item -> item.setCount(redisTemplate.boundListOps(RedisConst.XK_LIST_PREFIX + item.getId()).size()))
+                .peek(item -> {
+                    Long size = redisTemplate.boundListOps(RedisConst.XK_LIST_PREFIX + item.getId()).size();
+                    item.setCount(size);
+                    if (size == null || size == 0) {
+                        item.setSelectFlag(3);
+                    }
+                })
                 .collect(Collectors.toList());
 
         // 处理返回数据是否可以被选 可选:1 被选择:2 不可选:3
         for (CourseSelectable courseSelectable : resultList) {
-            if (courseSelectableId != null) {
-                if (courseSelectableId.equals(courseSelectable.getCourseId())) {
-                    // 选择了这门课课程
-                    courseSelectable.setSelectFlag(2);
+            if (courseSelectable.getSelectFlag() == null) {
+                if (courseSelectableId != null) {
+                    if (courseSelectableId.equals(courseSelectable.getCourseId())) {
+                        // 选择了这门课课程 2
+                        courseSelectable.setSelectFlag(2);
+                    } else {
+                        // 选择了其他课程 3
+                        courseSelectable.setSelectFlag(3);
+                    }
                 } else {
-                    // 选择了其他课程
-                    courseSelectable.setSelectFlag(3);
+                    // 可以选择 1
+                    courseSelectable.setSelectFlag(1);
                 }
-            } else {
-                // 可以选择
-                courseSelectable.setSelectFlag(1);
             }
         }
         return resultList;
@@ -201,10 +209,6 @@ public class ActivityServiceImpl implements ActivityService {
         Object obj = redisTemplate.boundListOps(RedisConst.XK_LIST_PREFIX + courseSelectableId).rightPop();
         if (obj != null) {
             executorService.execute(() -> {
-                // 状态位数量-1
-                StateCacheHelper.sub(courseSelectableId);
-            });
-            executorService.execute(() -> {
                 // 向队列中发送消息
                 XkRecode recode = new XkRecode(studentId, courseSelectableId, xkCode);
                 rabbitService.send(RabbitConst.EXCHANGE_DIRECT_XK, RabbitConst.ROUTING_XK, recode);
@@ -216,6 +220,7 @@ public class ActivityServiceImpl implements ActivityService {
             });
             return Result.ok().message("正在处理中");
         } else {
+            redisTemplate.convertAndSend(RedisConst.STATE_TOPIC,courseSelectableId+":false");
             return Result.build(null, ResultCodeEnum.FULL);
         }
     }
@@ -227,7 +232,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public void rollback(XkRecode xkRecode) {
         // 1、状态位
-        StateCacheHelper.rollback(xkRecode.getCourseSelectableId());
+        redisTemplate.convertAndSend(RedisConst.STATE_TOPIC,xkRecode.getCourseSelectableId()+":true");
 
         // 2、防止超选的list
         redisTemplate.boundListOps(RedisConst.XK_LIST_PREFIX + xkRecode.getCourseSelectableId()).leftPush(xkRecode.getCourseSelectableId().toString());

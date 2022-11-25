@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Swagger2配置信息
+ * @author makeronbean
  */
 @Configuration
 @EnableSwagger2

@@ -21,9 +21,12 @@ public class ScheduledTask {
     @Autowired
     private RabbitService rabbitService;
 
+
+    /**
+     * 定时任务 用于导入和清理数据
+     */
     @Scheduled(cron = "0/15 * * * * ?")
     public void task18() {
-        //log.info("task----->{}","success");
         rabbitService.send(RabbitConst.EXCHANGE_DIRECT_TASK,RabbitConst.ROUTING_TASK_1,"");
     }
 

@@ -13,18 +13,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * Redis配置类
+ * @author makeronbean
  */
 @Configuration
-// 开启缓存
 @EnableCaching
 public class RedisConfig {
-    // 声明模板
-    /*
-    ref = 表示引用
-    value = 具体的值
-    <bean class="org.springframework.data.redis.core.RedisTemplate" >
-        <property name="defaultSerializer" ref = "">
-    </bean>
+    /**
+     * 声明模板
      */
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {

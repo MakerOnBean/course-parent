@@ -24,7 +24,9 @@ public class Result<T> {
 
     public Result(){}
 
-    // 返回数据
+    /**
+     * 返回数据
+     */
     protected static <T> Result<T> build(T data) {
         Result<T> result = new Result<T>();
         if (data != null) {
@@ -46,9 +48,6 @@ public class Result<T> {
 
     /**
      * 操作成功
-     * @param data
-     * @param <T>
-     * @return
      */
     public static<T> Result<T> ok(T data){
         Result<T> result = build(data);
@@ -61,9 +60,6 @@ public class Result<T> {
 
     /**
      * 操作失败
-     * @param data
-     * @param <T>
-     * @return
      */
     public static<T> Result<T> fail(T data){
         Result<T> result = build(data);

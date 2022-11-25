@@ -6,54 +6,39 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author makeronbean
  * @createTime 2022-11-24  11:07
- * @description TODO 系统缓存类，状态位在此保存，选课id对应的数量
+ * @description TODO 系统缓存类，状态位在此保存， 选课id : boolean
  */
 public class StateCacheHelper {
 
     /**
      * 缓存容器
      */
-    private final static Map<Long, Integer> CACHE_MAP = new ConcurrentHashMap<Long, Integer>();
+    private final static Map<Long, Boolean> CACHE_MAP = new ConcurrentHashMap<>();
 
     static {
-        CACHE_MAP.put(1L,10);
-        CACHE_MAP.put(2L,10);
-        CACHE_MAP.put(3L,10);
-        CACHE_MAP.put(4L,10);
-        CACHE_MAP.put(5L,10);
-        CACHE_MAP.put(6L,10);
-        CACHE_MAP.put(7L,10);
-        CACHE_MAP.put(8L,10);
+        CACHE_MAP.put(1L,true);
+        CACHE_MAP.put(2L,true);
+        CACHE_MAP.put(3L,true);
+        CACHE_MAP.put(4L,true);
+        CACHE_MAP.put(5L,true);
+        CACHE_MAP.put(6L,true);
+        CACHE_MAP.put(7L,true);
+        CACHE_MAP.put(8L,true);
     }
 
 
     /**
-     * 回滚 1 数量
+     * 状态位设置为true
      */
-    public static void rollback(Long key) {
-        synchronized (StateCacheHelper.class) {
-            Integer integer = CACHE_MAP.get(key);
-            CACHE_MAP.put(key,integer+1);
-        }
+    public static void setStateTrue(Long key) {
+        CACHE_MAP.put(key,true);
     }
 
-
     /**
-     * 减少 1 数量
+     * 状态位设置为false
      */
-    public static void sub(Long key) {
-        synchronized (StateCacheHelper.class) {
-            Integer integer = CACHE_MAP.get(key);
-            CACHE_MAP.put(key,integer-1);
-        }
-    }
-
-
-    /**
-     * 加入缓存
-     */
-    public static void put(Long key, Integer count) {
-        CACHE_MAP.put(key, count);
+    public static void setStateFalse(Long key) {
+        CACHE_MAP.put(key,false);
     }
 
 
@@ -61,15 +46,14 @@ public class StateCacheHelper {
      * key对应的count是否为0
      */
     public static boolean canHandle(Long key) {
-        Integer count = CACHE_MAP.get(key);
-        return count != null && count > 0;
+        return CACHE_MAP.get(key);
     }
 
 
     /**
      * 获取缓存
      */
-    public static Integer get(Long key) {
+    public static Boolean get(Long key) {
         return CACHE_MAP.get(key);
     }
 
