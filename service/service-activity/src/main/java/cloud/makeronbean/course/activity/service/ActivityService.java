@@ -29,14 +29,14 @@ public interface ActivityService {
     /**
      * 获取具体可选课程列表
      */
-    List<CourseSelectable> getDetailList(String xkCode, Long kindId);
+    List<CourseSelectable> getDetailList(String xkCode, Long kindId, String studentId);
 
 
 
     /**
      * 选择具体的课程
      */
-    Result select(Long courseSelectableId, Long studentId, String xkCode);
+    Result select(Long courseSelectableId, Long studentId, String xkCode, Long kindId);
 
 
     /**

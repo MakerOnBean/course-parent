@@ -114,7 +114,7 @@ public class CourseServiceImpl implements CourseService {
             courseSelected.setStudentId(studentId);
             courseSelectedMapper.insert(courseSelected);
 
-            redisTemplate.boundHashOps(RedisConst.XK_STUDENT_PREFIX + xkRecode.getXkCode())
+            redisTemplate.boundHashOps(RedisConst.XK_COURSE_PREFIX + xkRecode.getCourseSelectableId())
                     .put(xkRecode.getStudentId().toString(),"1");
         } catch (Exception e) {
             // 异常处理

@@ -12,12 +12,12 @@ public class RedisConst {
     /**
      * 选课列表
      */
-    public static final String XK_PREFIX = "xk:";
+    public static final String XK_KIND_PREFIX = "xk:kind:";
 
     /**
      * 选课类别
      */
-    public static final String XK_CODE_PREFIX = "xkCode:";
+    public static final String XK_CODE_PREFIX = "xk:code:";
 
     /**
      * 防止超选
@@ -27,5 +27,15 @@ public class RedisConst {
     /**
      * 是否选过课
      */
-    public static final String XK_STUDENT_PREFIX = "xk:student:";
+    public static final String XK_COURSE_PREFIX = "xk:course:";
+
+    /**
+     * 学生id是否被限制登录
+     */
+    public static final String LIMIT_PREFIX = "limit:";
+
+    /**
+     * 学生id登录次数记录
+     */
+    public static final String LIMIT_TIME_PREFIX = "limit:time:";
 }

@@ -14,12 +14,12 @@ public class StateCacheHelper {
      */
     private final static Map<Long, Integer> CACHE_MAP = new ConcurrentHashMap<Long, Integer>();
 
-    /*static {
+    static {
         CACHE_MAP.put(1L,10);
         CACHE_MAP.put(2L,10);
         CACHE_MAP.put(3L,10);
         CACHE_MAP.put(4L,10);
-    }*/
+    }
 
     /**
      * 回滚 1 数量

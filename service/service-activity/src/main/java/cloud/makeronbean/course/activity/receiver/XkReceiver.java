@@ -70,6 +70,5 @@ public class XkReceiver {
         } finally {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
         }
-
     }
 }

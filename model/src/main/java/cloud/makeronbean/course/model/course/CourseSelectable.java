@@ -20,4 +20,13 @@ public class CourseSelectable extends BaseEntity {
     private String courseName;
     private String teacherName;
     private Integer count;
+
+    /**
+     * 判断是否可以选择
+     * 可以选择：1
+     * 已选择：2
+     * 不可选：3
+     */
+    @TableField(exist = false)
+    private Integer selectFlag;
 }

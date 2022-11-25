@@ -36,7 +36,7 @@ public class StudentController {
 
         Map<String,Object> result = studentService.login(login,request);
         if (result == null) {
-            return Result.fail();
+            return Result.build(null,ResultCodeEnum.MISMATCH);
         }
         return Result.ok(result);
     }
@@ -49,9 +49,6 @@ public class StudentController {
     @GetMapping("/detail")
     public Result detail(HttpServletRequest request) {
         String studentId = AuthContextHolder.getStudentId(request);
-        if (StringUtils.isEmpty(studentId)) {
-            return Result.build(null, ResultCodeEnum.LOGIN_AUTH);
-        }
         StudentInfo studentInfo = studentService.detail(Long.valueOf(studentId));
         return Result.ok(studentInfo);
     }

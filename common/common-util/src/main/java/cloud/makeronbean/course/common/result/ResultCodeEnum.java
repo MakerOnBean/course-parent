@@ -18,6 +18,9 @@ public enum ResultCodeEnum {
     PERMISSION(205, "没有权限"),
     LOGIN_AUTH(206, "未登陆"),
     REPEAT(207, "重复选课"),
+    BUSY(208, "系统繁忙"),
+    LIMIT(209,"学生id已被限制访问"),
+    MISMATCH(210,"登录账号或密码不正确")
     ;
 
     private Integer code;

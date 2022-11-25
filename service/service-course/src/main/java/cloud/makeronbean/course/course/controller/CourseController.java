@@ -38,6 +38,10 @@ public class CourseController {
             return Result.build(null,ResultCodeEnum.LOGIN_AUTH);
         }
         List<CourseInfo> courseInfoList = courseService.list(Long.valueOf(studentId));
-        return Result.ok(courseInfoList);
+        if (courseInfoList == null) {
+            return Result.build(null,ResultCodeEnum.BUSY);
+        } else {
+            return Result.ok(courseInfoList);
+        }
     }
 }
