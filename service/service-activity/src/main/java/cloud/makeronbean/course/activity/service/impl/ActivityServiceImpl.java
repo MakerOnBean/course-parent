@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -80,7 +81,7 @@ public class ActivityServiceImpl implements ActivityService {
                 }
 
                 executorService.execute(() -> {
-                    StateCacheHelper.put(courseSelectableId, courseSelectable.getCount());
+                    StateCacheHelper.put(courseSelectableId, Integer.valueOf(courseSelectable.getCount().toString()));
                 });
             }
         }
@@ -109,6 +110,14 @@ public class ActivityServiceImpl implements ActivityService {
      */
     @Override
     public List<CourseSelectable> getDetailList(String xkCode, Long kindId, String studentId) {
+
+        // 判断选课是否对应类别
+        BoundHashOperations hashXkCode = redisTemplate.boundHashOps(RedisConst.XK_CODE_PREFIX + xkCode);
+        if (Boolean.FALSE.equals(hashXkCode.hasKey(kindId.toString()))) {
+            redisTemplate.opsForValue().set(RedisConst.LIMIT_PREFIX + studentId, "select --> 选课码不对应类别", 30L, TimeUnit.MINUTES);
+            return null;
+        }
+
         // 判断是否已经选过了 kindId 对应类别下的课程
         Long courseSelectableId = null;
         BoundHashOperations hashCourse = redisTemplate.boundHashOps(RedisConst.XK_KIND_PREFIX + kindId);
@@ -126,17 +135,22 @@ public class ActivityServiceImpl implements ActivityService {
         // 返回结果集处理
         List<CourseSelectable> resultList = values.stream()
                 .map(item -> JSON.parseObject(item, CourseSelectable.class))
-                .peek(item -> item.setCount(StateCacheHelper.get(item.getId())))
+                //.peek(item -> item.setCount(StateCacheHelper.get(item.getId())))
+                .peek(item -> item.setCount(redisTemplate.boundListOps(RedisConst.XK_LIST_PREFIX + item.getId()).size()))
                 .collect(Collectors.toList());
 
+        // 处理返回数据是否可以被选 可选:1 被选择:2 不可选:3
         for (CourseSelectable courseSelectable : resultList) {
             if (courseSelectableId != null) {
                 if (courseSelectableId.equals(courseSelectable.getCourseId())) {
+                    // 选择了这门课课程
                     courseSelectable.setSelectFlag(2);
                 } else {
+                    // 选择了其他课程
                     courseSelectable.setSelectFlag(3);
                 }
             } else {
+                // 可以选择
                 courseSelectable.setSelectFlag(1);
             }
         }
@@ -150,11 +164,18 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Result select(Long courseSelectableId, Long studentId, String xkCode, Long kindId) {
 
+        // 选课码不对应类别
+        BoundHashOperations hashXkCode = redisTemplate.boundHashOps(RedisConst.XK_CODE_PREFIX + xkCode);
+        if (Boolean.FALSE.equals(hashXkCode.hasKey(kindId.toString()))) {
+            redisTemplate.opsForValue().set(RedisConst.LIMIT_PREFIX + studentId, "select --> 选课码不对应类别", 30L, TimeUnit.MINUTES);
+            return Result.build(null,ResultCodeEnum.ILLEGAL_REQUEST);
+        }
+
         BoundHashOperations hashKind = redisTemplate.boundHashOps(RedisConst.XK_KIND_PREFIX + kindId);
         Set<String> keys = hashKind.keys();
-
         // 类别中没有对应选课
         if (!keys.contains(String.valueOf(courseSelectableId))) {
+            redisTemplate.opsForValue().set(RedisConst.LIMIT_PREFIX + studentId, "select --> 类别中没有对应选课", 30L, TimeUnit.MINUTES);
             return Result.build(null,ResultCodeEnum.ILLEGAL_REQUEST);
         }
 
@@ -179,7 +200,6 @@ public class ActivityServiceImpl implements ActivityService {
         // 从选课list中弹出一个元素
         Object obj = redisTemplate.boundListOps(RedisConst.XK_LIST_PREFIX + courseSelectableId).rightPop();
         if (obj != null) {
-
             executorService.execute(() -> {
                 // 状态位数量-1
                 StateCacheHelper.sub(courseSelectableId);
@@ -189,7 +209,6 @@ public class ActivityServiceImpl implements ActivityService {
                 XkRecode recode = new XkRecode(studentId, courseSelectableId, xkCode);
                 rabbitService.send(RabbitConst.EXCHANGE_DIRECT_XK, RabbitConst.ROUTING_XK, recode);
             });
-
             executorService.execute(() -> {
                 // redis中添加标记，防止重复点击选课
                 BoundHashOperations hashResult = redisTemplate.boundHashOps(RedisConst.XK_COURSE_PREFIX + courseSelectableId);
@@ -227,6 +246,7 @@ public class ActivityServiceImpl implements ActivityService {
         String value = (String) boundHashOps.get(studentId.toString());
         // 没有选课记录
         if (StringUtils.isEmpty(value)) {
+            redisTemplate.opsForValue().set(RedisConst.LIMIT_PREFIX + studentId, "isSuccess ---> 不存在选课记录", 30L, TimeUnit.MINUTES);
             return Result.build(null,ResultCodeEnum.ILLEGAL_REQUEST);
         } else {
             switch (value) {
@@ -237,6 +257,7 @@ public class ActivityServiceImpl implements ActivityService {
                 case "2":
                     return Result.build(null, ResultCodeEnum.FULL);
                 default:
+                    redisTemplate.opsForValue().set(RedisConst.LIMIT_PREFIX + studentId, "isSuccess --> 查询不存在的选课数据", 30L, TimeUnit.MINUTES);
                     return Result.build(null,ResultCodeEnum.ILLEGAL_REQUEST);
             }
         }

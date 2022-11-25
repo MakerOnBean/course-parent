@@ -2,10 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cloud.makeronbean.course.course.mapper.CourseInfoMapper">
 
-    <!--<resultMap id="baseMap" type="cloud.makeronbean.course.model.course.CourseInfo" autoMapping="true">
-        <id property="id" column="id"/>
-    </resultMap>-->
-
     <sql id="baseSql">
         id, name, teacher_name, start_time, type, create_time, update_time, is_deleted
     </sql>
@@ -14,10 +10,10 @@
     <select id="selectCourseInfoList" resultType="cloud.makeronbean.course.model.course.CourseInfo">
         select ci.* from course_info ci
                              join course_class cc on ci.id = cc.course_id
-        where cc.class_id = 1 and ci.is_deleted = 0 and cc.is_deleted = 0
+        where cc.class_id = #{classId} and ci.is_deleted = 0 and cc.is_deleted = 0
         union select ci.*from course_info ci
                                    join course_selected cs on ci.id = cs.course_id
-        where cs.student_id = 1  and ci.is_deleted = 0 and cs.is_deleted = 0;
+        where cs.student_id = #{studentId}  and ci.is_deleted = 0 and cs.is_deleted = 0;
     </select>
 
 </mapper>

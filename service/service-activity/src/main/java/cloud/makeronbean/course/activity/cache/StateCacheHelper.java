@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description TODO 系统缓存类，状态位在此保存，选课id对应的数量
  */
 public class StateCacheHelper {
+
     /**
      * 缓存容器
      */
@@ -19,7 +20,12 @@ public class StateCacheHelper {
         CACHE_MAP.put(2L,10);
         CACHE_MAP.put(3L,10);
         CACHE_MAP.put(4L,10);
+        CACHE_MAP.put(5L,10);
+        CACHE_MAP.put(6L,10);
+        CACHE_MAP.put(7L,10);
+        CACHE_MAP.put(8L,10);
     }
+
 
     /**
      * 回滚 1 数量
@@ -42,12 +48,14 @@ public class StateCacheHelper {
         }
     }
 
+
     /**
      * 加入缓存
      */
     public static void put(Long key, Integer count) {
         CACHE_MAP.put(key, count);
     }
+
 
     /**
      * key对应的count是否为0
@@ -57,12 +65,14 @@ public class StateCacheHelper {
         return count != null && count > 0;
     }
 
+
     /**
      * 获取缓存
      */
     public static Integer get(Long key) {
         return CACHE_MAP.get(key);
     }
+
 
     /**
      * 清除缓存

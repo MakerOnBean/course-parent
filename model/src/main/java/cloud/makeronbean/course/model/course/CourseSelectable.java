@@ -19,7 +19,7 @@ public class CourseSelectable extends BaseEntity {
     private Long courseId;
     private String courseName;
     private String teacherName;
-    private Integer count;
+    private Long count;
 
     /**
      * 判断是否可以选择

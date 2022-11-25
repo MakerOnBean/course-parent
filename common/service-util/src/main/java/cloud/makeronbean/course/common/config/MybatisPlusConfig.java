@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * MybatisPlus配置类
- *
+ * @author makeronbean
  */
 @EnableTransactionManagement
 @Configuration

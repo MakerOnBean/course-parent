@@ -61,14 +61,6 @@ public class StudentServiceImpl implements StudentService {
         Long studentId = login.getStudentId();
 
         // 查询选课码
-        /*LambdaQueryWrapper<StudentInfo> sw = new LambdaQueryWrapper<>();
-        sw.eq(StudentInfo::getId,studentId);
-        // 修改处 1
-        StudentInfo studentInfo = studentInfoMapper.selectOne(sw);
-        if (studentInfo == null || StringUtils.isEmpty(studentInfo.getXkCode())) {
-            return null;
-        }
-        String xkCode = studentInfo.getXkCode();*/
         // 根据studentId查询xkCode
         String xkCode = studentInfoMapper.selectXkCode(studentId);
 
@@ -97,8 +89,6 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public StudentInfo detail(Long studentId) {
-        // 修改处 2
-        //return studentInfoMapper.selectById(studentId);
         return studentInfoMapper.selectStudentById(studentId);
     }
 

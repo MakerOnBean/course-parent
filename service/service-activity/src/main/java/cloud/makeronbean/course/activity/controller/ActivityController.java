@@ -4,6 +4,7 @@ import cloud.makeronbean.course.activity.block.XkBlockHandler;
 import cloud.makeronbean.course.activity.service.ActivityService;
 import cloud.makeronbean.course.common.limit.Limit;
 import cloud.makeronbean.course.common.result.Result;
+import cloud.makeronbean.course.common.result.ResultCodeEnum;
 import cloud.makeronbean.course.common.util.AuthContextHolder;
 import cloud.makeronbean.course.model.course.CourseSelectable;
 import cloud.makeronbean.course.model.course.CourseSelectableKind;
@@ -30,6 +31,7 @@ public class ActivityController {
      * 根据xkCode获取对应选课信息
      * /activity/getKindList
      */
+    @Limit
     @GetMapping("/getKindList")
     @SentinelResource(value = "getKindList",
             blockHandlerClass = {XkBlockHandler.class},
@@ -54,6 +56,9 @@ public class ActivityController {
         String studentId = AuthContextHolder.getStudentId(request);
         String xkCode = AuthContextHolder.getXkCode(request);
         List<CourseSelectable> courseSelectableList = activityService.getDetailList(xkCode, kindId, studentId);
+        if (courseSelectableList == null) {
+            return Result.build(null, ResultCodeEnum.ILLEGAL_REQUEST);
+        }
         return Result.ok(courseSelectableList);
     }
 
@@ -61,6 +66,7 @@ public class ActivityController {
      * 选择具体的课程
      * /activity/select/{courseSelectableId}
      */
+    @Limit
     @PostMapping("/select/{kindId}/{courseSelectableId}")
     @SentinelResource(value = "select",
             blockHandlerClass = XkBlockHandler.class,
@@ -78,6 +84,7 @@ public class ActivityController {
      * 查询选课是否成功
      * /activity/isSuccess/{courseSelectableId}
      */
+    @Limit
     @GetMapping("/isSuccess/{courseSelectableId}")
     @SentinelResource(value = "isSuccess",blockHandlerClass = XkBlockHandler.class,blockHandler = "handlerIsSuccess")
     public Result isSuccess(HttpServletRequest request,
