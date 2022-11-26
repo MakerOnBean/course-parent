@@ -57,6 +57,10 @@ public class RabbitProducerAckConfig implements RabbitTemplate.ConfirmCallback,R
         }
     }
 
+
+    /**
+     * 从交换机发送消息到队列 失败时触发（发送成功不触发）
+     */
     @Override
     public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
         // 获取 CourseCorrelationData 对象的 id

@@ -37,6 +37,7 @@ public class XkReceiver {
 
     /**
      * 导入可选课的数据
+     * 清除过期数据
      */
     @SneakyThrows
     @RabbitListener(bindings = @QueueBinding(
@@ -47,6 +48,9 @@ public class XkReceiver {
     public void importToRedis(Message message, Channel channel) {
         try {
             List<CourseSelectableKind> courseSelectableKindList = courseFeignClient.getAllSelectable();
+            // 清除过期缓存
+            activityService.removeCache();
+            // 缓存当日可选课程
             activityService.importToRedis(courseSelectableKindList);
             log.info("courseSelectableKindList------->{}",courseSelectableKindList);
         } finally {

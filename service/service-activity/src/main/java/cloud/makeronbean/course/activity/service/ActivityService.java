@@ -48,4 +48,10 @@ public interface ActivityService {
      * 查询选课是否成功
      */
     Result isSuccess(Long courseSelectableId, String xkCode, Long studentId);
+
+    /**
+     * 清除过期的选课数据
+     */
+    void removeCache();
+
 }

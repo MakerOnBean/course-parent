@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
  * @description TODO
  */
 @Service
+@SuppressWarnings("all")
 public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
@@ -266,5 +267,15 @@ public class ActivityServiceImpl implements ActivityService {
                     return Result.build(null,ResultCodeEnum.ILLEGAL_REQUEST);
             }
         }
+    }
+
+
+    /**
+     * 清除过期的选课数据
+     */
+    @Override
+    public void removeCache() {
+        Set<String> keys = redisTemplate.keys("*");
+        redisTemplate.delete(keys);
     }
 }
