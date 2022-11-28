@@ -7,7 +7,7 @@ package cloud.makeronbean.course.common.constant;
  */
 public class RedisConst {
     public static final String USER_LOGIN_KEY_PREFIX = "user:login:";
-    public static final int USER_KEY_TIMEOUT = 60 * 60 * 24 * 7;
+    public static final int USER_KEY_TIMEOUT = 60 * 60 * 24;
 
     /**
      * 选课列表
@@ -48,4 +48,5 @@ public class RedisConst {
      * 消息接收者处理消息的方法名
      */
     public static final String STATE_RECEIVER_METHOD = "receiveMessage";
+    public static final long LIMIT_TIME = 30L;
 }

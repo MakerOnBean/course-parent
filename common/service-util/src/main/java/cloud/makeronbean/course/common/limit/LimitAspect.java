@@ -63,7 +63,7 @@ public class LimitAspect implements Ordered {
             Long result = redisTemplate.opsForValue().increment(RedisConst.LIMIT_TIME_PREFIX + studentId);
             if (result != null && result > Long.parseLong(maxTime)) {
                 String date = DateUtil.formatDate(new Date());
-                redisTemplate.opsForValue().set(RedisConst.LIMIT_PREFIX + studentId, ip + "limit --> 访问异常", 30L, TimeUnit.MINUTES);
+                redisTemplate.opsForValue().set(RedisConst.LIMIT_PREFIX + studentId, ip + "limit --> 访问异常", RedisConst.LIMIT_TIME, TimeUnit.MINUTES);
                 log.info("新增限制操作信息：studentId:{},ip:{},时间:{}",studentId,ip,date);
                 return Result.build(null,ResultCodeEnum.LIMIT);
             }
