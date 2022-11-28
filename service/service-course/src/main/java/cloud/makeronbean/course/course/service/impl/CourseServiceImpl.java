@@ -125,4 +125,13 @@ public class CourseServiceImpl implements CourseService {
             throw e;
         }
     }
+
+
+    /**
+     * 查询学生已选课程信息
+     */
+    @Override
+    public List<CourseInfo> getSelected(String studentId) {
+        return this.courseInfoMapper.getSelectedCourseByStudentId(studentId);
+    }
 }

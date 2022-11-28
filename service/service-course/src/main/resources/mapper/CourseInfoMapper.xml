@@ -16,4 +16,11 @@
         where cs.student_id = #{studentId}  and ci.is_deleted = 0 and cs.is_deleted = 0;
     </select>
 
+    <!-- List<CourseInfo> getSelectedCourseByStudentId(String studentId); -->
+    <select id="getSelectedCourseByStudentId" resultType="cloud.makeronbean.course.model.course.CourseInfo">
+        select ci.*from course_info ci
+                            join course_selected cs on ci.id = cs.course_id
+        where cs.student_id = #{studentId} and ci.is_deleted = 0 and cs.is_deleted = 0;
+    </select>
+
 </mapper>

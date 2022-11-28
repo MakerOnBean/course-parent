@@ -32,7 +32,6 @@ public interface ActivityService {
     List<CourseSelectable> getDetailList(String xkCode, Long kindId, String studentId);
 
 
-
     /**
      * 选择具体的课程
      */

@@ -30,4 +30,10 @@ public interface CourseService {
      * 处理选课消息
      */
     void handleXk(XkRecode xkRecode);
+
+
+    /**
+     * 查询学生已选课程信息
+     */
+    List<CourseInfo> getSelected(String studentId);
 }

@@ -141,7 +141,7 @@ public class ActivityServiceImpl implements ActivityService {
                     Long size = redisTemplate.boundListOps(RedisConst.XK_LIST_PREFIX + item.getId()).size();
                     item.setCount(size);
                     if (size == null || size == 0) {
-                        item.setSelectFlag(3);
+                        item.setSelectFlag("不可选");
                     }
                 })
                 .collect(Collectors.toList());
@@ -150,16 +150,16 @@ public class ActivityServiceImpl implements ActivityService {
         for (CourseSelectable courseSelectable : resultList) {
             if (courseSelectable.getSelectFlag() == null) {
                 if (courseSelectableId != null) {
-                    if (courseSelectableId.equals(courseSelectable.getCourseId())) {
+                    if (courseSelectableId.equals(courseSelectable.getId())) {
                         // 选择了这门课课程 2
-                        courseSelectable.setSelectFlag(2);
+                        courseSelectable.setSelectFlag("已选");
                     } else {
                         // 选择了其他课程 3
-                        courseSelectable.setSelectFlag(3);
+                        courseSelectable.setSelectFlag("不可选");
                     }
                 } else {
                     // 可以选择 1
-                    courseSelectable.setSelectFlag(1);
+                    courseSelectable.setSelectFlag("可选");
                 }
             }
         }
@@ -277,5 +277,6 @@ public class ActivityServiceImpl implements ActivityService {
     public void removeCache() {
         Set<String> keys = redisTemplate.keys("*");
         redisTemplate.delete(keys);
+        redisTemplate.convertAndSend(RedisConst.STATE_TOPIC,"clear");
     }
 }

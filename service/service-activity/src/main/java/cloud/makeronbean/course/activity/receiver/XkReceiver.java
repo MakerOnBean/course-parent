@@ -17,7 +17,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -37,22 +36,39 @@ public class XkReceiver {
 
     /**
      * 导入可选课的数据
-     * 清除过期数据
      */
     @SneakyThrows
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = RabbitConst.QUEUE_TASK_1,durable = "true",autoDelete = "false"),
-            exchange = @Exchange(value = RabbitConst.EXCHANGE_DIRECT_TASK,durable = "true",autoDelete = "false"),
-            key = RabbitConst.ROUTING_TASK_1
+            value = @Queue(value = RabbitConst.QUEUE_TASK_IMPORT,durable = "true",autoDelete = "false"),
+            exchange = @Exchange(value = RabbitConst.EXCHANGE_DIRECT_TASK_IMPORT,durable = "true",autoDelete = "false"),
+            key = RabbitConst.ROUTING_TASK_IMPORT
     ))
     public void importToRedis(Message message, Channel channel) {
         try {
             List<CourseSelectableKind> courseSelectableKindList = courseFeignClient.getAllSelectable();
             // 清除过期缓存
-            activityService.removeCache();
+            //activityService.removeCache();
             // 缓存当日可选课程
             activityService.importToRedis(courseSelectableKindList);
             log.info("courseSelectableKindList------->{}",courseSelectableKindList);
+        } finally {
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
+        }
+    }
+
+
+    /**
+     * 清理过期数据
+     */
+    @SneakyThrows
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = RabbitConst.QUEUE_TASK_CLEAR,durable = "true",autoDelete = "false"),
+            exchange = @Exchange(value = RabbitConst.EXCHANGE_DIRECT_TASK_CLEAR,durable = "true",autoDelete = "false"),
+            key = RabbitConst.ROUTING_TASK_CLEAR
+    ))
+    public void clearRedis(Message message, Channel channel) {
+        try {
+            activityService.removeCache();
         } finally {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
         }

@@ -18,4 +18,9 @@ public interface CourseInfoMapper extends BaseMapper<CourseInfo> {
      * 查询学生对应课程信息
      */
     List<CourseInfo> selectCourseInfoList(@Param("classId") Long classId, @Param("studentId") Long studentId);
+
+    /**
+     * 查询学生已选课程信息
+     */
+    List<CourseInfo> getSelectedCourseByStudentId(String studentId);
 }

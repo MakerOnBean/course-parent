@@ -28,5 +28,8 @@ public class CourseSelectable extends BaseEntity {
      * 不可选：3
      */
     @TableField(exist = false)
-    private Integer selectFlag;
+    private String selectFlag;
+
+    @TableField(exist = false)
+    private String selectFlagName;
 }

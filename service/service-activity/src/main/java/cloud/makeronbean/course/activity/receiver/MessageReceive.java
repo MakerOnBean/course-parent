@@ -15,6 +15,9 @@ public class MessageReceive {
 
     public void receiveMessage(String message) {
         log.info("MessageReceive.receiveMessage 已接收到消息------------>{}",message);
+        if (message.startsWith("clear")) {
+            StateCacheHelper.removeAll();
+        }
         message = message.replaceAll("\"","");
         String[] split = message.split(":");
         if (split.length == 2) {

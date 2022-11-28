@@ -14,5 +14,5 @@ public @interface Limit {
     // 默认限流访问次数
     String value() default "10";
     // 限流秒数
-    String seconds() default "100";
+    String seconds() default "2";
 }

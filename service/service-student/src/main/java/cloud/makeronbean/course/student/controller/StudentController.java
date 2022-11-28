@@ -1,5 +1,6 @@
 package cloud.makeronbean.course.student.controller;
 
+import cloud.makeronbean.course.common.limit.Limit;
 import cloud.makeronbean.course.common.result.Result;
 import cloud.makeronbean.course.common.result.ResultCodeEnum;
 import cloud.makeronbean.course.common.util.AuthContextHolder;
@@ -46,6 +47,7 @@ public class StudentController {
      * token:92605d389d9840c79edd487f8967293d
      * GET /student/detail
      */
+    @Limit
     @GetMapping("/detail")
     public Result detail(HttpServletRequest request) {
         String studentId = AuthContextHolder.getStudentId(request);

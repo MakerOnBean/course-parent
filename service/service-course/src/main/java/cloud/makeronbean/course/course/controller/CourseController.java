@@ -1,5 +1,6 @@
 package cloud.makeronbean.course.course.controller;
 
+import cloud.makeronbean.course.common.limit.Limit;
 import cloud.makeronbean.course.common.result.Result;
 import cloud.makeronbean.course.common.result.ResultCodeEnum;
 import cloud.makeronbean.course.common.util.AuthContextHolder;
@@ -31,6 +32,7 @@ public class CourseController {
      * 查询学生对应课程信息
      * /course/list
      */
+    @Limit
     @GetMapping("/list")
     public Result list(HttpServletRequest request) {
         String studentId = AuthContextHolder.getStudentId(request);
@@ -43,5 +45,17 @@ public class CourseController {
         } else {
             return Result.ok(courseInfoList);
         }
+    }
+
+    /**
+     * 查询学生已选课程信息
+     * /course/getSelected
+     */
+    @Limit
+    @GetMapping("/getSelected")
+    public Result getSelected(HttpServletRequest request) {
+        String studentId = AuthContextHolder.getStudentId(request);
+        List<CourseInfo> courseInfoList = this.courseService.getSelected(studentId);
+        return Result.ok(courseInfoList);
     }
 }
