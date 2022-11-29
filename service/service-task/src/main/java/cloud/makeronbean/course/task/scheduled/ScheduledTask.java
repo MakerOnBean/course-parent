@@ -25,7 +25,7 @@ public class ScheduledTask {
     /**
      * 定时任务 用于导入
      */
-    @Scheduled(cron = "0 0 1 * * ? *")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void taskImportToRedis() {
         rabbitService.send(RabbitConst.EXCHANGE_DIRECT_TASK_IMPORT,RabbitConst.ROUTING_TASK_IMPORT,"");
     }
@@ -34,7 +34,7 @@ public class ScheduledTask {
     /**
      * 定时任务 用于清理数据
      */
-    @Scheduled(cron = "0 0 0 * * ? *")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void clear() {
         rabbitService.send(RabbitConst.EXCHANGE_DIRECT_TASK_CLEAR,RabbitConst.ROUTING_TASK_CLEAR,"");
     }

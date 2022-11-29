@@ -8,6 +8,7 @@ import cloud.makeronbean.course.common.util.MD5;
 import cloud.makeronbean.course.model.student.StudentInfo;
 import cloud.makeronbean.course.model.student.StudentLogin;
 import cloud.makeronbean.course.student.service.StudentService;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;

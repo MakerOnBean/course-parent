@@ -80,6 +80,7 @@ public class ActivityController {
         return activityService.select(courseSelectableId, Long.valueOf(studentId), xkCode,kindId);
     }
 
+
     /**
      * 查询选课是否成功
      * /activity/isSuccess/{courseSelectableId}
